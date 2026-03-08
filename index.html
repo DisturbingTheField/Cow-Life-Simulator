@@ -1,0 +1,809 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐄 Cow Life Simulator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+        .container { 
+            display: flex; 
+            gap: 20px; 
+            flex-wrap: nowrap;
+            justify-content: center; 
+            align-items: flex-start;
+        }
+        #controls {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            width: 420px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+        .control-group { 
+            margin-bottom: 12px; 
+            display: block;
+            width: 100%;
+            clear: both;
+        }
+        label { display: block; margin-bottom: 5px; font-size: 13px; color: #aaa; }
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: #2ecc71; }
+        input[type="number"] { background: #333; color: white; border: 1px solid #444; padding: 4px; border-radius: 4px; width: 60px; float: right; margin-top: -5px; }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.8; }
+        #resetBtn { background-color: #e74c3c; }
+        #pauseBtn { background-color: #3498db; }
+        #langBtn { background-color: #9b59b6; }
+        #loadCfgBtn { background-color: #27ae60; }
+        #saveCfgBtn { background-color: #2980b9; }
+        
+        .stats { margin-top: 15px; padding-top: 10px; border-top: 1px solid #333; font-size: 13px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .val { float: right; color: #2ecc71; font-weight: bold; }
+        .stat-highlight { color: #f1c40f; }
+
+        canvas { 
+            border: 2px solid #444; 
+            background-color: #000; 
+            image-rendering: pixelated;
+            display: block;
+        }
+
+        .cow-symbol::before {
+            content: "";
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: black;
+            top: 0; left: 0;
+        }
+        .cow-symbol::after {
+            content: "";
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: black;
+            bottom: 0; right: 0;
+        }
+
+        #graphCanvas { margin-top: 20px; background-color: #1a1a1a; border-radius: 8px; }
+
+        .legend {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            width: 570px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            flex: 0 0 calc(33.33% - 15px);
+            min-width: 130px;
+        }
+
+        .symbol {
+            width: 15px;
+            height: 15px;
+            border: 1px solid #fff;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1 id="ui-title">🐄 Cow Life Simulator</h1>
+
+    <div class="container">
+        <div>
+            <canvas id="simCanvas"></canvas>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="symbol cow-symbol" style="background: white;"></div>
+                    <span id="ui-legHungry">Hungry cow</span>
+                </div>
+                <div class="legend-item">
+                    <div class="symbol cow-symbol" style="background: #f1c40f;"></div>
+                    <span id="ui-legEating">Eating cow</span>
+                </div>
+                <div class="legend-item">
+                    <div class="symbol cow-symbol" style="background: red;"></div>
+                    <span id="ui-legSick">Sick cow</span>
+                </div>
+                <div class="legend-item">
+                    <div class="symbol" style="background: #1e8449;"></div>
+                    <span id="ui-legGrass">Grass</span>
+                </div>
+                <div class="legend-item">
+                    <div class="symbol" style="background: #444;"></div>
+                    <span id="ui-legEaten">Eaten grass</span>
+                </div>
+                <div class="legend-item">
+                    <div class="symbol" style="background: #795548;"></div>
+                    <span id="ui-legStone">Stones</span>
+                </div>
+                <div class="legend-item">
+                    <div class="symbol" style="background: #5dade2;"></div>
+                    <span id="ui-legWater">Water</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="controls">
+            <div class="control-group">
+                <label><span id="ui-startCows">Starting cows (#)</span>: <span id="startCowsVal" class="val">50</span></label>
+                <input type="range" id="startCows" min="1" max="200" value="50">
+            </div>
+            <div class="control-group">
+                <label><span id="ui-grassGrow">Grass growth time (s)</span>: <span id="grassGrowVal" class="val">100</span></label>
+                <input type="range" id="grassGrow" min="5" max="120" value="100">
+            </div>
+            <div class="control-group">
+                <label><span id="ui-eatTime">Eating time (s)</span>: <span id="eatTimeVal" class="val">5</span></label>
+                <input type="range" id="eatTime" min="1" max="20" value="5">
+            </div>
+            <div class="control-group">
+                <label><span id="ui-hungerLimit">Survival without food (s)</span>: <span id="hungerLimitVal" class="val">20</span></label>
+                <input type="range" id="hungerLimit" min="1" max="60" value="20">
+            </div>
+            <div class="control-group">
+                <label id="ui-reproLabel">Reproduction chance (%):<span id="reproChanceVal" class="val">17</span></label>
+                <input type="range" id="reproChance" min="0" max="100" value="17">
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #444;">
+            
+            <div class="control-group">
+                <label><span id="ui-illnessChance">Illness chance (%)</span>: <span id="illnessChanceVal" class="val">1/1000</span></label>
+                <input type="range" id="illnessChance" min="0" max="100" value="63">
+            </div>
+            <div class="control-group">
+                <label><span id="ui-illnessDeath">Illness fatality (%)</span>: <span id="illnessDeathVal" class="val">5</span></label>
+                <input type="range" id="illnessDeath" min="0" max="100" value="5">
+            </div>
+            <div class="control-group">
+                <label><span id="ui-maxAge">Max age. 0 = off (s)</span>: <input type="number" id="maxAge" value="1000" min="0"></label>
+            </div>
+            
+            <div class="btn-row">
+                <button id="pauseBtn">Pause</button>
+                <button id="resetBtn">Reset</button>
+                <button id="langBtn">Load Language</button>
+                <input type="file" id="langInput" accept=".json" style="display: none;">
+            </div>
+
+            <div class="btn-row">
+                <button id="loadCfgBtn">Load config</button>
+                <button id="saveCfgBtn">Save config</button>
+                <input type="file" id="cfgInput" accept=".json" style="display: none;">
+            </div>
+
+            <div class="stats">
+                <div class="stats-grid">
+                    <div><span id="ui-status">Status</span>: <span id="statusText" class="val" style="color: #3498db;">Running</span></div>
+                    <div><span id="ui-elapsed">Elapsed time</span>: <span id="elapsedTime" class="val">0s</span></div>
+                    <div><span id="ui-current">Current cows</span>: <span id="currentCows" class="val">0</span></div>
+                    <div><span id="ui-grass">Grass available</span>: <span id="grassPct" class="val">0%</span></div>
+                    <div><span id="ui-maxCows">Max cows ever</span>: <span id="maxCows" class="val">0</span></div>
+                    <div><span id="ui-minCows">Min cows ever</span>: <span id="minCows" class="val">0</span></div>
+                    <div><span id="ui-oldest">Oldest cow</span>: <span id="oldestCow" class="val">0s</span></div>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #333; margin: 8px 0;">
+                <div class="stats-grid">
+                    <div class="stat-highlight"><span id="ui-born">Total births</span>: <span id="totalBorn" class="val stat-highlight">0</span></div>
+                    <div class="stat-highlight"><span id="ui-deadHunger">Deaths hunger</span>: <span id="deadHunger" class="val stat-highlight">0</span></div>
+                    <div class="stat-highlight"><span id="ui-deadIllness">Deaths illness</span>: <span id="deadIllness" class="val stat-highlight">0</span></div>
+                    <div class="stat-highlight"><span id="ui-deadAge">Deaths age</span>: <span id="deadAge" class="val stat-highlight">0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="graphCanvas" width="960" height="150"></canvas>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const gCtx = graphCanvas.getContext('2d');
+
+        const gridSize = 50;
+        const cellSize = 12;
+        canvas.width = gridSize * cellSize;
+        canvas.height = gridSize * cellSize;
+
+        let config = {
+            startCows: 50,
+            grassGrowTime: 100,
+            eatTime: 5,
+            hungerLimit: 20,
+            reproChance: 0.17,
+            illnessChance: 0.001,
+            illnessDeathRate: 0.05,
+            maxAge: 1000
+        };
+
+        let lang = {
+            statusRunning: "Running",
+            statusPaused: "Paused",
+            btnPause: "Pause",
+            btnResume: "Resume",
+            graphMax: "Max value is: ",
+            legHungry: "Hungry cow",
+            legEating: "Eating cow",
+            legSick: "Sick cow",
+            legGrass: "Grass",
+            legEaten: "Eaten grass",
+            legStone: "Stones",
+            legWater: "Water"
+        };
+
+        let stats = { born: 0, deadHunger: 0, deadIllness: 0, deadAge: 0, maxCows: 0, minCows: 0, oldestAge: 0 };
+        let cells = [];
+        let cows = [];
+        let lastTime = 0;
+        let isPaused = false;
+        let totalElapsed = 0;
+        let populationHistory = [];
+        let historyTimer = 0;
+
+        function init() {
+            cells = [];
+            for (let x = 0; x < gridSize; x++) {
+                cells[x] = [];
+                for (let y = 0; y < gridSize; y++) {
+                    cells[x][y] = { growth: 1.0, type: 'grass' };
+                }
+            }
+
+            generateTerrainArea('stone', 50);
+            generateTerrainArea('stone', 25);
+            generateTerrainArea('stone', 25);
+            generateTerrainArea('stone', 7);
+            generateTerrainArea('stone', 9);
+            generateTerrainArea('stone', 11);
+            generateTerrainArea('stone', 7);
+            generateTerrainArea('water', 15);
+            generateTerrainArea('water', 90);
+            generateTerrainArea('water', 45);
+            generateTerrainArea('water', 9);
+
+
+            cows = [];
+            stats = { born: 0, deadHunger: 0, deadIllness: 0, deadAge: 0, maxCows: 0, minCows: 0, oldestAge: 0 };
+            
+            for (let i = 0; i < config.startCows; i++) {
+                let rx, ry;
+                let attempts = 0;
+                do {
+                    rx = Math.floor(Math.random() * gridSize);
+                    ry = Math.floor(Math.random() * gridSize);
+                    attempts++;
+                } while ((cells[rx][ry].type !== 'grass' || cows.some(c => c.x === rx && c.y === ry)) && attempts < 1000);
+                
+                if (attempts < 1000) spawnCow(rx, ry, true); 
+            }
+            
+            totalElapsed = 0;
+            stats.maxCows = cows.length;
+            stats.minCows = cows.length;
+            populationHistory = [cows.length];
+            updateUI(0);
+        }
+
+        function generateTerrainArea(type, targetCount) {
+            let startX, startY;
+            do {
+                startX = Math.floor(Math.random() * gridSize);
+                startY = Math.floor(Math.random() * gridSize);
+            } while (cells[startX][startY].type !== 'grass');
+
+            let areaCells = [[startX, startY]];
+            cells[startX][startY].type = type;
+            cells[startX][startY].growth = 0;
+
+            let count = 1;
+            while (count < targetCount) {
+                let randomBase = areaCells[Math.floor(Math.random() * areaCells.length)];
+                let dirs = [[0,1], [0,-1], [1,0], [-1,0]];
+                let d = dirs[Math.floor(Math.random() * 4)];
+                let nx = randomBase[0] + d[0];
+                let ny = randomBase[1] + d[1];
+
+                if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize && cells[nx][ny].type === 'grass') {
+                    cells[nx][ny].type = type;
+                    cells[nx][ny].growth = 0;
+                    areaCells.push([nx, ny]);
+                    count++;
+                }
+            }
+        }
+
+        function spawnCow(x, y, isInitial = false) {
+            cows.push({
+                x: x, y: y,
+                hunger: -config.eatTime,
+                age: 0,
+                state: 'moving',
+                timer: 0,
+                moveTimer: 0,
+                isSick: false,
+                sickTimer: 0
+            });
+            if (!isInitial) stats.born++;
+        }
+
+        function isOccupied(x, y, currentCow) {
+            if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) return true;
+            if (cells[x][y].type !== 'grass') return true;
+            return cows.some(c => c !== currentCow && c.x === x && c.y === y);
+        }
+
+        function findBirthSpot(x, y) {
+            let validSpots = [];
+            for (let dx = -1; dx <= 1; dx++) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    if (dx === 0 && dy === 0) continue;
+                    let nx = x + dx, ny = y + dy;
+                    if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
+                        if (cells[nx][ny].type === 'grass' && !isOccupied(nx, ny, null)) {
+                            validSpots.push({x: nx, y: ny});
+                        }
+                    }
+                }
+            }
+            return validSpots.length > 0 ? validSpots[Math.floor(Math.random() * validSpots.length)] : null;
+        }
+
+        function update(dt) {
+            if (isPaused) return;
+            totalElapsed += dt;
+            historyTimer += dt;
+
+            if (historyTimer >= 1.0) {
+                populationHistory.push(cows.length);
+                if (populationHistory.length > 300) populationHistory.shift();
+                historyTimer = 0;
+            }
+
+            for (let x = 0; x < gridSize; x++) {
+                for (let y = 0; y < gridSize; y++) {
+                    if (cells[x][y].type === 'grass' && cells[x][y].growth < 1.0) {
+                        cells[x][y].growth += dt / config.grassGrowTime;
+                        if (cells[x][y].growth > 1.0) cells[x][y].growth = 1.0;
+                    }
+                }
+            }
+
+            let currentOldest = 0;
+            for (let i = cows.length - 1; i >= 0; i--) {
+                let cow = cows[i];
+                cow.age += dt;
+                if (cow.age > currentOldest) currentOldest = cow.age;
+
+                if (config.maxAge >= 5 && cow.age >= config.maxAge) {
+                    stats.deadAge++;
+                    cows.splice(i, 1);
+                    continue;
+                }
+
+                if (!cow.isSick && config.illnessChance > 0) {
+                    if (Math.random() < config.illnessChance * dt) {
+                        cow.isSick = true;
+                        cow.sickTimer = 0;
+                    }
+                }
+
+                if (cow.isSick) {
+                    cow.sickTimer += dt;
+                    if (cow.sickTimer >= 25) {
+                        if (Math.random() < config.illnessDeathRate) {
+                            stats.deadIllness++;
+                            cows.splice(i, 1);
+                            continue;
+                        } else {
+                            cow.isSick = false; 
+                        }
+                    }
+                }
+
+                if (cow.state !== 'eating') cow.hunger += dt;
+                if (cow.hunger >= config.hungerLimit) {
+                    stats.deadHunger++;
+                    cows.splice(i, 1);
+                    continue;
+                }
+
+                if (cow.state === 'eating') {
+                    cow.timer += dt;
+                    if (cow.timer >= config.eatTime) {
+                        cells[cow.x][cow.y].growth = 0;
+                        cow.hunger = -1;
+                        cow.state = 'moving';
+                        cow.timer = 0;
+                    }
+                } 
+                
+                if (cow.state === 'moving') {
+                    cow.moveTimer += dt;
+                    if (cow.moveTimer >= 0.5) {
+                        cow.moveTimer = 0;
+                        if (cells[cow.x][cow.y].growth >= 1.0) {
+                            cow.state = 'eating';
+                            cow.timer = 0;
+                            cow.hunger = 0;
+                        } else {
+                            let possibleGrass = [];
+                            for (let dx = -2; dx <= 2; dx++) {
+                                for (let dy = -2; dy <= 2; dy++) {
+                                    let nx = cow.x + dx, ny = cow.y + dy;
+                                    if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
+                                        if (cells[nx][ny].type === 'grass' && cells[nx][ny].growth >= 1.0) {
+                                            possibleGrass.push({x: nx, y: ny});
+                                        }
+                                    }
+                                }
+                            }
+
+                            let moved = false;
+                            if (possibleGrass.length > 0) {
+                                let target = possibleGrass[Math.floor(Math.random() * possibleGrass.length)];
+                                let tx = cow.x, ty = cow.y;
+                                if (target.x > cow.x) tx++; else if (target.x < cow.x) tx--;
+                                if (target.y > cow.y) ty++; else if (target.y < cow.y) ty--;
+                                if (!isOccupied(tx, ty, cow)) { cow.x = tx; cow.y = ty; moved = true; }
+                            }
+
+                            if (!moved) {
+                                let freeNeighbors = [];
+                                for (let dx = -1; dx <= 1; dx++) {
+                                    for (let dy = -1; dy <= 1; dy++) {
+                                        if (dx === 0 && dy === 0) continue;
+                                        let nx = cow.x + dx, ny = cow.y + dy;
+                                        if (!isOccupied(nx, ny, cow)) freeNeighbors.push({x: nx, y: ny});
+                                    }
+                                }
+                                if (freeNeighbors.length > 0) {
+                                    let walkTo = freeNeighbors[Math.floor(Math.random() * freeNeighbors.length)];
+                                    cow.x = walkTo.x; cow.y = walkTo.y; moved = true;
+                                }
+                            }
+                            if (moved) checkReproduction(cow, i);
+                        }
+                    }
+                }
+            }
+
+            stats.oldestAge = currentOldest;
+            if (cows.length > stats.maxCows) stats.maxCows = cows.length;
+            if (cows.length > 0 && (cows.length < stats.minCows || stats.minCows === 0)) stats.minCows = cows.length;
+
+            let freeGrassCount = 0;
+            for (let x = 0; x < gridSize; x++) {
+                for (let y = 0; y < gridSize; y++) {
+                    if (cells[x][y].type === 'grass' && cells[x][y].growth >= 1.0 && !isOccupied(x, y, null)) freeGrassCount++;
+                }
+            }
+            updateUI(freeGrassCount);
+        }
+
+        function updateUI(grassCount) {
+            document.getElementById('elapsedTime').innerText = Math.floor(totalElapsed) + "s";
+            document.getElementById('currentCows').innerText = cows.length;
+            document.getElementById('maxCows').innerText = stats.maxCows;
+            document.getElementById('minCows').innerText = stats.minCows;
+            document.getElementById('totalBorn').innerText = stats.born;
+            document.getElementById('deadHunger').innerText = stats.deadHunger;
+            document.getElementById('deadIllness').innerText = stats.deadIllness;
+            document.getElementById('deadAge').innerText = stats.deadAge;
+            document.getElementById('oldestCow').innerText = Math.floor(stats.oldestAge) + "s";
+            
+            let totalPossibleGrass = 0;
+            for(let x=0; x<gridSize; x++) for(let y=0; y<gridSize; y++) if(cells[x][y].type === 'grass') totalPossibleGrass++;
+            let pct = (grassCount / totalPossibleGrass) * 100;
+            document.getElementById('grassPct').innerText = Math.round(pct) + "%";
+        }
+
+        function checkReproduction(cow, index) {
+            if (cows.length >= 2100) return;
+            let maturityAge = config.maxAge > 0 ? config.maxAge * 0.1 : 50;
+            if (cow.age < maturityAge) return;
+
+            for (let j = 0; j < cows.length; j++) {
+                if (index === j) continue;
+                let other = cows[j];
+                if (other.age < maturityAge) continue;
+
+                if (Math.abs(cow.x - other.x) <= 1 && Math.abs(cow.y - other.y) <= 1) {
+                    let someoneIsEating = (cow.state === 'eating' || other.state === 'eating');
+                    if (someoneIsEating && Math.random() < (config.reproChance * 0.1)) {
+                        let spot = findBirthSpot(cow.x, cow.y);
+                        if (spot) spawnCow(spot.x, spot.y);
+                        return;
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let x = 0; x < gridSize; x++) {
+                for (let y = 0; y < gridSize; y++) {
+                    let c = cells[x][y];
+                    if (c.type === 'stone') ctx.fillStyle = '#795548'; 
+                    else if (c.type === 'water') ctx.fillStyle = '#5dade2'; 
+                    else ctx.fillStyle = c.growth >= 1.0 ? '#1e8449' : '#444'; 
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
+                }
+            }
+            cows.forEach(cow => {
+                const px = cow.x * cellSize;
+                const py = cow.y * cellSize;
+                if (cow.isSick) ctx.fillStyle = "red";
+                else ctx.fillStyle = cow.state === 'eating' ? "#f1c40f" : "white";
+                ctx.fillRect(px, py, cellSize-1, cellSize-1);
+                ctx.fillStyle = "black";
+                ctx.fillRect(px, py, cellSize/2, cellSize/2);
+                ctx.fillRect(px + cellSize/2, py + cellSize/2, cellSize/2, cellSize/2);
+            });
+            drawGraph();
+        }
+
+        function drawGraph() {
+            gCtx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+            let maxY = 100;
+            let currentCount = cows.length;
+            if (currentCount > 1995) maxY = 2500;
+            else if (currentCount > 1195) maxY = 2000;
+            else if (currentCount > 795) maxY = 1200;
+            else if (currentCount > 395) maxY = 800;
+            else if (currentCount > 195) maxY = 400;
+            else if (currentCount > 95) maxY = 200;
+            else maxY = 100;
+
+            gCtx.strokeStyle = "#333";
+            gCtx.lineWidth = 1;
+            gCtx.beginPath();
+            for (let j = 0; j <= 4; j++) {
+                let y = graphCanvas.height - ((maxY / 4 * j) / maxY * graphCanvas.height);
+                gCtx.moveTo(0, y); gCtx.lineTo(graphCanvas.width, y);
+            }
+            gCtx.stroke();
+
+            gCtx.fillStyle = "#999";
+            gCtx.font = "14px Arial";
+            gCtx.fillText(lang.graphMax + maxY, 5, 12);
+
+            if (populationHistory.length < 2) return;
+            gCtx.strokeStyle = "#2ecc71";
+            gCtx.lineWidth = 2;
+            gCtx.beginPath();
+            let stepX = graphCanvas.width / 300;
+            for (let i = 0; i < populationHistory.length; i++) {
+                let x = i * stepX;
+                let y = graphCanvas.height - (populationHistory[i] / maxY * graphCanvas.height);
+                if (y < 0) y = 0; 
+                if (i === 0) gCtx.moveTo(x, y); else gCtx.lineTo(x, y);
+            }
+            gCtx.stroke();
+        }
+
+        function handleLanguageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    applyLanguage(data);
+                } catch (err) {
+                    alert("Error reading JSON: " + err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function applyLanguage(data) {
+            for (let key in data) {
+                let el = document.getElementById("ui-" + key);
+                if (el) {
+                    if (key === "reproLabel") {
+                        const valSpan = el.querySelector('#reproChanceVal');
+                        el.innerText = data[key] + " ";
+                        if (valSpan) el.appendChild(valSpan);
+                    } else {
+                        el.innerText = data[key];
+                    }
+                }
+            }
+            
+            if (data.btnPause) lang.btnPause = data.btnPause;
+            if (data.btnResume) lang.btnResume = data.btnResume;
+            if (data.statusRunning) lang.statusRunning = data.statusRunning;
+            if (data.statusPaused) lang.statusPaused = data.statusPaused;
+            if (data.graphMax) lang.graphMax = data.graphMax;
+
+            if (data.legHungry) lang.legHungry = data.legHungry;
+            if (data.legEating) lang.legEating = data.legEating;
+            if (data.legSick) lang.legSick = data.legSick;
+            if (data.legGrass) lang.legGrass = data.legGrass;
+            if (data.legEaten) lang.legEaten = data.legEaten;
+            if (data.legStone) lang.legStone = data.legStone;
+            if (data.legWater) lang.legWater = data.legWater;
+
+            if (data.btnReset) document.getElementById('resetBtn').innerText = data.btnReset;
+            if (data.btnLang) document.getElementById('langBtn').innerText = data.btnLang;
+            
+            if (data.btnLoadCfg) document.getElementById('loadCfgBtn').innerText = data.btnLoadCfg;
+            if (data.btnSaveCfg) document.getElementById('saveCfgBtn').innerText = data.btnSaveCfg;
+
+            document.getElementById('statusText').innerText = isPaused ? lang.statusPaused : lang.statusRunning;
+            document.getElementById('pauseBtn').innerText = isPaused ? lang.btnResume : lang.btnPause;
+        }
+
+        function saveConfig() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.getHours().toString().padStart(2, '0') + now.getMinutes().toString().padStart(2, '0') + now.getSeconds().toString().padStart(2, '0');
+            const fileName = `Cow-config-${dateStr}-${timeStr}.json`;
+
+            const dataStr = JSON.stringify(config, null, 4);
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const newConfig = JSON.parse(e.target.result);
+                    Object.assign(config, newConfig);
+                    syncUIWithConfig();
+                    alert("Configuration loaded.");
+                } catch (err) {
+                    alert("Error when loading configuration: " + err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function syncUIWithConfig() {
+            document.getElementById('startCows').value = config.startCows;
+            document.getElementById('startCowsVal').innerText = config.startCows;
+            document.getElementById('grassGrow').value = config.grassGrowTime;
+            document.getElementById('grassGrowVal').innerText = config.grassGrowTime;
+            document.getElementById('eatTime').value = config.eatTime;
+            document.getElementById('eatTimeVal').innerText = config.eatTime;
+            document.getElementById('hungerLimit').value = config.hungerLimit;
+            document.getElementById('hungerLimitVal').innerText = config.hungerLimit;
+            document.getElementById('reproChance').value = config.reproChance * 100;
+            document.getElementById('reproChanceVal').innerText = config.reproChance * 100;
+            document.getElementById('illnessDeath').value = config.illnessDeathRate * 100;
+            document.getElementById('illnessDeathVal').innerText = config.illnessDeathRate * 100;
+            document.getElementById('maxAge').value = config.maxAge;
+
+            if (config.illnessChance === 0) {
+                document.getElementById('illnessChance').value = 0;
+                document.getElementById('illnessChanceVal').innerText = "0";
+            } else {
+                let den = Math.round(1 / config.illnessChance);
+                let sliderVal = ((2500 - den) / (2500 - 100)) * 100;
+                document.getElementById('illnessChance').value = sliderVal;
+                document.getElementById('illnessChanceVal').innerText = "1/" + den;
+            }
+        }
+
+        function setupControls() {
+            document.getElementById('startCows').oninput = (e) => {
+                config.startCows = parseInt(e.target.value);
+                document.getElementById('startCowsVal').innerText = e.target.value;
+            };
+            document.getElementById('grassGrow').oninput = (e) => {
+                config.grassGrowTime = parseInt(e.target.value);
+                document.getElementById('grassGrowVal').innerText = e.target.value;
+            };
+            document.getElementById('eatTime').oninput = (e) => {
+                config.eatTime = parseInt(e.target.value);
+                document.getElementById('eatTimeVal').innerText = e.target.value;
+            };
+            document.getElementById('hungerLimit').oninput = (e) => {
+                config.hungerLimit = parseInt(e.target.value);
+                document.getElementById('hungerLimitVal').innerText = e.target.value;
+            };
+            document.getElementById('reproChance').oninput = (e) => {
+                config.reproChance = e.target.value / 100;
+                document.getElementById('reproChanceVal').innerText = e.target.value;
+            };
+            document.getElementById('illnessChance').oninput = (e) => {
+                let v = parseInt(e.target.value);
+                const valDisplay = document.getElementById('illnessChanceVal');
+                if (v === 0) { config.illnessChance = 0; valDisplay.innerText = "0"; }
+                else {
+                    let rawDenominator = 2500 - ((v / 100) * (2500 - 100));
+                    let roundedDenominator = Math.round(rawDenominator / 25) * 25;
+                    if (roundedDenominator < 100) roundedDenominator = 100;
+                    config.illnessChance = 1 / roundedDenominator;
+                    valDisplay.innerText = "1/" + roundedDenominator;
+                }
+            };
+            document.getElementById('illnessDeath').oninput = (e) => {
+                config.illnessDeathRate = e.target.value / 100;
+                document.getElementById('illnessDeathVal').innerText = e.target.value;
+            };
+            document.getElementById('maxAge').onchange = (e) => {
+                config.maxAge = parseInt(e.target.value);
+            };
+            document.getElementById('pauseBtn').onclick = (e) => {
+                isPaused = !isPaused;
+                e.target.innerText = isPaused ? lang.btnResume : lang.btnPause;
+                document.getElementById('statusText').innerText = isPaused ? lang.statusPaused : lang.statusRunning;
+            };
+            document.getElementById('resetBtn').onclick = init;
+
+            const langBtn = document.getElementById('langBtn');
+            const langInput = document.getElementById('langInput');
+            langBtn.onclick = () => langInput.click();
+            langInput.onchange = handleLanguageUpload;
+
+            document.getElementById('saveCfgBtn').onclick = saveConfig;
+            document.getElementById('loadCfgBtn').onclick = () => document.getElementById('cfgInput').click();
+            document.getElementById('cfgInput').onchange = loadConfig;
+        }
+
+        setupControls();
+        init();
+        requestAnimationFrame(loop);
+
+        function loop(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            let dt = (timestamp - lastTime) / 1000;
+            if (dt > 0.1) dt = 0.1;
+            lastTime = timestamp;
+            update(dt);
+            draw();
+            requestAnimationFrame(loop);
+        }
+    </script>
+</body>
+</html>

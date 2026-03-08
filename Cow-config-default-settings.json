@@ -1,0 +1,10 @@
+{
+    "startCows": 50,
+    "grassGrowTime": 100,
+    "eatTime": 5,
+    "hungerLimit": 20,
+    "reproChance": 0.17,
+    "illnessChance": 0.001,
+    "illnessDeathRate": 0.05,
+    "maxAge": 1000
+}
