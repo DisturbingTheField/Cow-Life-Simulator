@@ -27,7 +27,7 @@
             background: #1e1e1e;
             padding: 20px;
             border-radius: 12px;
-            width: 350px;
+            width: 420px;
             border: 1px solid #333;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             flex-shrink: 0;
@@ -57,7 +57,6 @@
         button:hover { opacity: 0.8; }
         #resetBtn { background-color: #e74c3c; }
         #pauseBtn { background-color: #3498db; }
-        #langBtn { background-color: #9b59b6; }
         #loadCfgBtn { background-color: #27ae60; }
         #saveCfgBtn { background-color: #2980b9; }
         
@@ -226,8 +225,12 @@
             <div class="btn-row">
                 <button id="pauseBtn">Pause</button>
                 <button id="resetBtn">Reset</button>
-                <button id="langBtn">Load Language</button>
-                <input type="file" id="langInput" accept=".json" style="display: none;">
+                <select id="langSelect" style="flex: 1; padding: 10px; border-radius: 6px; background: #9b59b6; color: white; border: 1px solid #444; font-weight: bold; cursor: pointer; font-size: 13px;">
+                    <option value="English">English</option>
+                    <option value="Norsk">Norsk</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="German">German</option>
+                </select>
             </div>
 
             <div class="btn-row">
@@ -269,6 +272,167 @@
         const cellSize = 12;
         canvas.width = gridSize * cellSize;
         canvas.height = gridSize * cellSize;
+
+
+const languages = {
+    English: {
+        "title": "🐄 Cow Life Simulator",
+        "startCows": "Starting cows (#)",
+        "grassGrow": "Grass growth time (s)",
+        "eatTime": "Eating time (s)",
+        "hungerLimit": "Survival without food (s)",
+        "reproLabel": "Reproduction chance (%):",
+        "illnessChance": "Illness chance (%)",
+        "illnessDeath": "Illness fatality (%)",
+        "maxAge": "Max age. 0 = off (s)",
+        "status": "Status",
+        "elapsed": "Elapsed time",
+        "current": "Current cows",
+        "grass": "Grass available",
+        "maxCows": "Max cows ever",
+        "minCows": "Min cows ever",
+        "oldest": "Oldest cow",
+        "born": "Total births",
+        "deadHunger": "Deaths hunger",
+        "deadIllness": "Deaths illness",
+        "deadAge": "Deaths age",
+        "btnPause": "Pause",
+        "btnResume": "Resume",
+        "btnReset": "Reset",
+        "btnLang": "Load Language",
+        "statusRunning": "Running",
+        "statusPaused": "Paused",
+        "graphMax": "Max value is: ",
+        "btnLoadCfg": "Load config",
+        "btnSaveCfg": "Save config",
+        "legHungry": "Hungry cow",
+        "legEating": "Eating cow",
+        "legSick": "Sick cow",
+        "legGrass": "Grass",
+        "legEaten": "Eaten grass",
+        "legStone": "Stones",
+        "legWater": "Water"
+    },
+    Norsk: {
+        "title": "🐄 Ku-liv-simulator",
+        "startCows": "Antall kuer ved start (#)",
+        "grassGrow": "Gress veksttid etter oppspist (s)",
+        "eatTime": "Tid spise opp gresset (s)",
+        "hungerLimit": "Levetid uten mat (s)",
+        "reproLabel": "Formerings sannsynlighet ved ku treff, en må spise, begge eldre enn 10% av max alder eller over 50 sekunder om max er 0 (%):",
+        "illnessChance": "Sannsynlighet å bli syk. Er syk i 25 sekunder (%)",
+        "illnessDeath": "Dødelighet ved sykdom i prosent, avgjøres etter 25 sekunder (%)",
+        "maxAge": "Maks alder, 0 betyr av (s)",
+        "status": "Status",
+        "elapsed": "Total tid",
+        "current": "Antall kuer nå",
+        "grass": "Gress ledig",
+        "maxCows": "Maks antall kuer",
+        "minCows": "Min antall kuer",
+        "oldest": "Eldste ku",
+        "born": "Fødte kuer",
+        "deadHunger": "Død av sult",
+        "deadIllness": "Død av sykdom",
+        "deadAge": "Død av alder",
+        "btnPause": "Pause",
+        "btnResume": "Fortsett",
+        "btnReset": "Start pånytt",
+        "btnLang": "Last inn språk",
+        "statusRunning": "Kjører",
+        "statusPaused": "Pauset",
+        "graphMax": "Maks verdi er ",
+        "btnLoadCfg": "Last inn konfig",
+        "btnSaveCfg": "Lagre konfig",
+        "legHungry": "Sulten ku",
+        "legEating": "Spisende ku",
+        "legSick": "Syk ku",
+        "legGrass": "Gress",
+        "legEaten": "Oppspist gress",
+        "legStone": "Steiner",
+        "legWater": "Vann"
+    },
+    Spanish: {
+        "title": "🐄 Simulador de Vida de Vaca",
+        "startCows": "Vacas iniciales (#)",
+        "grassGrow": "Tiempo crecimiento pasto (s)",
+        "eatTime": "Tiempo para comer (s)",
+        "hungerLimit": "Supervivencia sin comida (s)",
+        "reproLabel": "Probabilidad reproducción (%):",
+        "illnessChance": "Probabilidad enfermedad (%)",
+        "illnessDeath": "Letalidad enfermedad (%)",
+        "maxAge": "Edad máx. 0 = off (s)",
+        "status": "Estado",
+        "elapsed": "Tiempo transcurrido",
+        "current": "Vacas actuales",
+        "grass": "Pasto disponible",
+        "maxCows": "Máx. vacas históricas",
+        "minCows": "Mín. vacas históricas",
+        "oldest": "Vaca más vieja",
+        "born": "Total nacimientos",
+        "deadHunger": "Muertes por hambre",
+        "deadIllness": "Muertes por enfermedad",
+        "deadAge": "Muertes por vejez",
+        "btnPause": "Pausar",
+        "btnResume": "Reanudar",
+        "btnReset": "Reiniciar",
+        "btnLang": "Cargar idioma",
+        "statusRunning": "En ejecución",
+        "statusPaused": "Pausado",
+        "graphMax": "Valor máx: ",
+        "btnLoadCfg": "Cargar config",
+        "btnSaveCfg": "Guardar config",
+        "legHungry": "Vaca hambrienta",
+        "legEating": "Vaca comiendo",
+        "legSick": "Vaca enferma",
+        "legGrass": "Pasto",
+        "legEaten": "Pasto comido",
+        "legStone": "Piedras",
+        "legWater": "Agua"
+    },
+    German: {
+        "title": "🐄 Kuh-Leben-Simulator",
+        "startCows": "Startende Kühe (#)",
+        "grassGrow": "Graswachstumszeit (s)",
+        "eatTime": "Essenszeit (s)",
+        "hungerLimit": "Überleben ohne Futter (s)",
+        "reproLabel": "Fortpflanzungschance (%):",
+        "illnessChance": "Krankheitschance (%)",
+        "illnessDeath": "Krankheitssterblichkeit (%)",
+        "maxAge": "Maximales Alter. 0 = aus (s)",
+        "status": "Status",
+        "elapsed": "Verstrichene Zeit",
+        "current": "Aktuelle Kühe",
+        "grass": "Verfügbares Gras",
+        "maxCows": "Maximale Kuhanzahl jemals",
+        "minCows": "Minimale Kuhanzahl jemals",
+        "oldest": "Älteste Kuh",
+        "born": "Gesamtgeburten",
+        "deadHunger": "Todesfälle Hunger",
+        "deadIllness": "Todesfälle Krankheit",
+        "deadAge": "Todesfälle Alter",
+        "btnPause": "Pausieren",
+        "btnResume": "Fortsetzen",
+        "btnReset": "Zurücksetzen",
+        "btnLang": "Sprache Laden",
+        "statusRunning": "Läuft",
+        "statusPaused": "Pausiert",
+        "graphMax": "Maximalwert ist: ",
+        "btnLoadCfg": "Konfiguration Laden",
+        "btnSaveCfg": "Konfiguration Speichern",
+        "legHungry": "Hungrige Kuh",
+        "legEating": "Essende Kuh",
+        "legSick": "Kranke Kuh",
+        "legGrass": "Gras",
+        "legEaten": "Gegessenes Gras",
+        "legStone": "Steine",
+        "legWater": "Wasser"
+    }
+};
+
+
+let currentLang = languages.en;
+
+
 
         let config = {
             startCows: 50,
@@ -646,28 +810,17 @@
             gCtx.stroke();
         }
 
-        function handleLanguageUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    applyLanguage(data);
-                } catch (err) {
-                    alert("Error reading JSON: " + err);
-                }
-            };
-            reader.readAsText(file);
-        }
 
         function applyLanguage(data) {
+            if (data.title) {
+                document.title = data.title;
+            }
             for (let key in data) {
                 let el = document.getElementById("ui-" + key);
                 if (el) {
-                    if (key === "reproLabel") {
-                        const valSpan = el.querySelector('#reproChanceVal');
+                    if (key === "reproLabel" || key === "maxAge" || key === "illnessChance" || key === "illnessDeath") {
+                        const valSpan = el.querySelector('.val'); 
                         el.innerText = data[key] + " ";
                         if (valSpan) el.appendChild(valSpan);
                     } else {
@@ -675,30 +828,15 @@
                     }
                 }
             }
-            
-            if (data.btnPause) lang.btnPause = data.btnPause;
-            if (data.btnResume) lang.btnResume = data.btnResume;
-            if (data.statusRunning) lang.statusRunning = data.statusRunning;
-            if (data.statusPaused) lang.statusPaused = data.statusPaused;
-            if (data.graphMax) lang.graphMax = data.graphMax;
-
-            if (data.legHungry) lang.legHungry = data.legHungry;
-            if (data.legEating) lang.legEating = data.legEating;
-            if (data.legSick) lang.legSick = data.legSick;
-            if (data.legGrass) lang.legGrass = data.legGrass;
-            if (data.legEaten) lang.legEaten = data.legEaten;
-            if (data.legStone) lang.legStone = data.legStone;
-            if (data.legWater) lang.legWater = data.legWater;
-
+            Object.assign(lang, data); 
             if (data.btnReset) document.getElementById('resetBtn').innerText = data.btnReset;
-            if (data.btnLang) document.getElementById('langBtn').innerText = data.btnLang;
-            
             if (data.btnLoadCfg) document.getElementById('loadCfgBtn').innerText = data.btnLoadCfg;
             if (data.btnSaveCfg) document.getElementById('saveCfgBtn').innerText = data.btnSaveCfg;
-
             document.getElementById('statusText').innerText = isPaused ? lang.statusPaused : lang.statusRunning;
             document.getElementById('pauseBtn').innerText = isPaused ? lang.btnResume : lang.btnPause;
         }
+
+
 
         function saveConfig() {
             const now = new Date();
@@ -806,15 +944,22 @@
             };
             document.getElementById('resetBtn').onclick = init;
 
-            const langBtn = document.getElementById('langBtn');
-            const langInput = document.getElementById('langInput');
-            langBtn.onclick = () => langInput.click();
-            langInput.onchange = handleLanguageUpload;
 
             document.getElementById('saveCfgBtn').onclick = saveConfig;
             document.getElementById('loadCfgBtn').onclick = () => document.getElementById('cfgInput').click();
             document.getElementById('cfgInput').onchange = loadConfig;
         }
+
+
+        document.getElementById('langSelect').addEventListener('change', (e) => {
+            const selectedCode = e.target.value;
+            const langData = languages[selectedCode];
+    
+            if (langData) {
+                applyLanguage(langData);
+            }
+        });
+
 
         setupControls();
         init();
