@@ -85,13 +85,12 @@ There are three types of disasters that can strike your farm. Every cow lost to 
 ## 📈 Risk & Probability
 The chance of a disaster occurring is dynamic. It scales with your herd size and time played. Once you surpass **200 cows**, the environment becomes significantly more unstable.
 
-### Probability Examples (per second):
-To give you an idea of the risk escalation:
-
-* **50 Cows:** `0.1%` chance (Stable / Low risk)
-* **210 Cows:** `0.3%` chance (Warning signs)
-* **250 Cows:** `1.0%` chance (High risk / Rapid escalation)
-* **400 Cows:** `2.0%` chance (Critical danger)
+#### Probability Examples:
+* **50 Cows:** `0.1%` (Stable / Low risk)
+* **350 Cows:** `0.45%` (Warning signs / Risk has quadrupled)
+* **500 Cows:** `1.0%` (High risk / Rapid escalation)
+* **750 Cows:** `2.8%` (Critical danger)
+* **1000+ Cows:** `5.0%` (Extreme peril / Near-constant disasters)
 
 > **Pro Tip:** Keep your herd manageable to avoid total collapse. Large-scale farming comes with large-scale consequences!
 
