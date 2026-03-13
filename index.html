@@ -1936,7 +1936,7 @@ if (!disasterActive) {
         const available = Object.keys(disastersOccurred).filter(k => !disastersOccurred[k]);
         if (available.length > 0) {
             const chosen = available[Math.floor(Math.random() * available.length)];
-            //startDisaster(chosen);
+            startDisaster(chosen);
             console.log(`Disaster! Propability: ${(currentChance * 100).toFixed(4)}%, Cows: ${count}, Type: ${chosen}`);
         }
     }
