@@ -1898,36 +1898,50 @@ function update(dt) {
 
 // Check for disaster every second
 if (!disasterActive && historyTimer >= 1.0) {
-    let timeScore = totalElapsed / 100; 
-    let cowScore = cows.length   / 4;
-    let totalScore = timeScore + cowScore;
-    if (totalElapsed > 30 || cows.length > 50) {
-        let currentChance = totalScore / 5000;
-        if (cows.length < 200) {
-            if (currentChance > 0.001) currentChance = 0.001;
-        } 
-        else if (cows.length >= 200 && cows.length <= 300) {
-            let dynamicCap = 0.001 + (cows.length - 200) * (0.019 / 100);
-            if (currentChance > dynamicCap) currentChance = dynamicCap;
-        } 
-        else {
-            if (currentChance > 0.1) currentChance = 0.1;
-        }        
-        // DEBUG
-        //console.log(`DEBUG! Score: ${totalScore.toFixed(2)}, Sjanse: ${currentChance.toFixed(4)}`);
-        if (Math.random() < currentChance) {
-            const available = Object.keys(disastersOccurred).filter(k => !disastersOccurred[k]);
-            if (available.length > 0) {
-                const chosen = available[Math.floor(Math.random() * available.length)];
-                startDisaster(chosen);
-                console.log(`Risiko-treff! Score: ${totalScore.toFixed(2)}, Sjanse: ${currentChance.toFixed(4)}, Type: ${chosen}`);
-            }
+
+
+if (!disasterActive) {
+    let currentChance = 0;
+    const count = cows.length;
+
+    if (count < 50) {
+        // 0-49 kuer: Ingen risiko
+        currentChance = 0;
+    } 
+    else if (count < 200) {
+        // 50-199 kuer: fast 1/1000 (0.1%)
+        currentChance = 1 / 1000; 
+    } 
+    else if (count < 500) {
+        // 200-499 kuer: lineær økning 1/1000 til 1/100
+        let t = (count - 200) / (500 - 200);
+        currentChance = (1 / 1000) + t * ((1 / 100) - (1 / 1000));
+    } 
+    else if (count < 1000) {
+        // 500-999 kuer: lineær økning 1/100 til 1/20
+        let t = (count - 500) / (1000 - 500);
+        currentChance = (1 / 100) + t * ((1 / 20) - (1 / 100));
+    } 
+    else {
+        // 1000 kuer og over: fast 1/20 (5.0%)
+        currentChance = 1 / 20;
+    }
+
+    // DEBUG
+    //console.log(`DEBUG: Disaster! Propability: ${(currentChance * 100).toFixed(4)}%, Cows: ${count}`);
+
+
+    // Utfør sjekken
+    if (currentChance > 0 && Math.random() < currentChance) {
+        const available = Object.keys(disastersOccurred).filter(k => !disastersOccurred[k]);
+        if (available.length > 0) {
+            const chosen = available[Math.floor(Math.random() * available.length)];
+            //startDisaster(chosen);
+            console.log(`Disaster! Propability: ${(currentChance * 100).toFixed(4)}%, Cows: ${count}, Type: ${chosen}`);
         }
     }
 }
-
-
-
+}
 
 
 
