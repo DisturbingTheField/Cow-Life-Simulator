@@ -27,7 +27,7 @@
             background: #1e1e1e;
             padding: 20px;
             border-radius: 12px;
-            width: 420px;
+            width: 440px;
             border: 1px solid #333;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             flex-shrink: 0;
@@ -330,7 +330,7 @@
                 <div class="stats-grid">
                     <div class="stat-highlight"><span id="ui-born">Total births</span>: <span id="totalBorn" class="val stat-highlight">0</span></div>
                     <div class="stat-highlight"><span id="ui-deadHunger">Deaths hunger</span>: <span id="deadHunger" class="val stat-highlight">0</span></div>
-                    <div class="stat-highlight"><span id="ui-deadIllness">Deaths illness</span>: <span id="deadIllness" class="val stat-highlight">0</span></div>
+                    <div class="stat-highlight"><span id="ui-deadIllness">Deaths illness/disaster</span>: <span id="deadIllness" class="val stat-highlight">0</span></div>
                     <div class="stat-highlight"><span id="ui-deadAge">Deaths age</span>: <span id="deadAge" class="val stat-highlight">0</span></div>
                 </div>
             </div>
@@ -403,7 +403,7 @@ const languages = {
         "oldest": "Oldest cow",
         "born": "Total births",
         "deadHunger": "Deaths hunger",
-        "deadIllness": "Deaths illness",
+        "deadIllness": "Deaths illness/disaster",
         "deadAge": "Deaths age",
         "btnPause": "Pause",
         "btnResume": "Resume",
@@ -445,7 +445,7 @@ const languages = {
         "oldest": "Eldste ku",
         "born": "Fødte kuer",
         "deadHunger": "Død av sult",
-        "deadIllness": "Død av sykdom",
+        "deadIllness": "Død av sykdom/katastrofe",
         "deadAge": "Død av alder",
         "btnPause": "Pause",
         "btnResume": "Fortsett",
@@ -490,7 +490,7 @@ const languages = {
         "oldest": "Vaca más vieja",
         "born": "Total nacimientos",
         "deadHunger": "Muertes por hambre",
-        "deadIllness": "Muertes por enfermedad",
+        "deadIllness": "Muertes por enfermedad/desastre",
         "deadAge": "Muertes por vejez",
         "btnPause": "Pausar",
         "btnResume": "Reanudar",
@@ -532,7 +532,7 @@ const languages = {
         "oldest": "Älteste Kuh",
         "born": "Gesamtgeburten",
         "deadHunger": "Todesfälle Hunger",
-        "deadIllness": "Todesfälle Krankheit",
+        "deadIllness": "Todesfälle Krankheit/katastrophe",
         "deadAge": "Todesfälle Alter",
         "btnPause": "Pausieren",
         "btnResume": "Fortsetzen",
@@ -574,7 +574,7 @@ French: {
         "oldest": "Vache la plus âgée",
         "born": "Naissances totales",
         "deadHunger": "Morts de faim",
-        "deadIllness": "Morts de maladie",
+        "deadIllness": "Morts de maladie/désastre",
         "deadAge": "Morts de vieillesse",
         "btnPause": "Pause",
         "btnResume": "Reprendre",
@@ -616,7 +616,7 @@ Chinese: {
         "oldest": "最长寿奶牛",
         "born": "出生总数",
         "deadHunger": "饥饿死亡数",
-        "deadIllness": "疾病死亡数",
+        "deadIllness": "疾病死亡数/灾难",
         "deadAge": "自然死亡数",
         "btnPause": "暂停",
         "btnResume": "继续",
@@ -658,7 +658,7 @@ Hindi: {
         "oldest": "सबसे उम्रदराज गाय",
         "born": "कुल जन्म",
         "deadHunger": "भुखमरी से मौतें",
-        "deadIllness": "बीमारी से मौतें",
+        "deadIllness": "बीमारी से मौतें/आपदा",
         "deadAge": "बुढ़ापे से मौतें",
         "btnPause": "रोकें",
         "btnResume": "फिर शुरू करें",
@@ -700,7 +700,7 @@ Arabic: {
         "oldest": "أكبر بقرة",
         "born": "إجمالي المواليد",
         "deadHunger": "موت جوعاً",
-        "deadIllness": "موت مرضاً",
+        "deadIllness": "موت مرضاً/كارثة",
         "deadAge": "موت عمراً",
         "btnPause": "إيقاف",
         "btnResume": "استئناف",
@@ -742,7 +742,7 @@ Russian: {
         "oldest": "Самая старая корова",
         "born": "Всего родилось",
         "deadHunger": "Смертей от голода",
-        "deadIllness": "Смертей от болезни",
+        "deadIllness": "Смертей от болезни/kатастрофа",
         "deadAge": "Смертей от старости",
         "btnPause": "Пауза",
         "btnResume": "Продолжить",
@@ -784,7 +784,7 @@ Italian: {
         "oldest": "Mucca più anziana",
         "born": "Nascite totali",
         "deadHunger": "Morti per fame",
-        "deadIllness": "Morti per malattia",
+        "deadIllness": "Morti per malattia/disastro",
         "deadAge": "Morti per vecchiaia",
         "btnPause": "Pausa",
         "btnResume": "Riprendi",
@@ -826,7 +826,7 @@ Portuguese: {
         "oldest": "Vaca mais velha",
         "born": "Nascimentos totais",
         "deadHunger": "Mortes por fome",
-        "deadIllness": "Mortes por doença",
+        "deadIllness": "Mortes por doença/desastre",
         "deadAge": "Mortes por idade",
         "btnPause": "Pausar",
         "btnResume": "Retomar",
@@ -868,7 +868,7 @@ Japanese: {
         "oldest": "最高齢の牛",
         "born": "総出生数",
         "deadHunger": "餓死数",
-        "deadIllness": "病死数",
+        "deadIllness": "病死数/災害",
         "deadAge": "寿命死数",
         "btnPause": "一時停止",
         "btnResume": "再開",
@@ -910,7 +910,7 @@ Bengali: {
         "oldest": "সবচেয়ে বয়স্ক গরু",
         "born": "মোট জন্ম",
         "deadHunger": "ক্ষুধায় মৃত্যু",
-        "deadIllness": "অসুস্থতায় মৃত্যু",
+        "deadIllness": "অসুস্থতায় মৃত্যু/বিপর্যয়",
         "deadAge": "বার্ধক্যে মৃত্যু",
         "btnPause": "বিরতি",
         "btnResume": "পুনরায় শুরু",
@@ -952,7 +952,7 @@ Vietnamese: {
         "oldest": "Con bò già nhất",
         "born": "Tổng số con được sinh",
         "deadHunger": "Chết do đói",
-        "deadIllness": "Chết do bệnh",
+        "deadIllness": "Chết do bệnh/thảm họa",
         "deadAge": "Chết do già",
         "btnPause": "Tạm dừng",
         "btnResume": "Tiếp tục",
@@ -994,7 +994,7 @@ Indonesian: {
         "oldest": "Sapi tertua",
         "born": "Total kelahiran",
         "deadHunger": "Mati kelaparan",
-        "deadIllness": "Mati sakit",
+        "deadIllness": "Mati sakit/bencana",
         "deadAge": "Mati usia tua",
         "btnPause": "Jeda",
         "btnResume": "Lanjutkan",
@@ -1036,7 +1036,7 @@ Urdu: {
         "oldest": "سب سے بوڑھی گائے",
         "born": "کل پیدائش",
         "deadHunger": "بھوک سے اموات",
-        "deadIllness": "بیماری سے اموات",
+        "deadIllness": "بیماری سے اموات/آفت",
         "deadAge": "بڑھاپے سے اموات",
         "btnPause": "روکیں",
         "btnResume": "دوبارہ شروع",
@@ -1078,7 +1078,7 @@ Turkish: {
         "oldest": "En yaşlı inek",
         "born": "Toplam doğum",
         "deadHunger": "Açlıktan ölümler",
-        "deadIllness": "Hastalıktan ölümler",
+        "deadIllness": "Hastalıktan ölümler/felaket",
         "deadAge": "Yaşlılıktan ölümler",
         "btnPause": "Duraklat",
         "btnResume": "Devam Et",
@@ -1120,7 +1120,7 @@ Icelandic: {
         "oldest": "Elsta kýrin",
         "born": "Heildarfæðingar",
         "deadHunger": "Dauðsföll vegna hungurs",
-        "deadIllness": "Dauðsföll vegna sjúkdóma",
+        "deadIllness": "Dauðsföll vegna sjúkdóma/hamfarir",
         "deadAge": "Dauðsföll vegna aldurs",
         "btnPause": "Pása",
         "btnResume": "Halda áfram",
@@ -1162,7 +1162,7 @@ Sami: {
         "oldest": "Boarráseamos gusa",
         "born": "Riegádan oktiibuot",
         "deadHunger": "Jápman nealgái",
-        "deadIllness": "Jápman dávdii",
+        "deadIllness": "Jápman dávdii/heahti",
         "deadAge": "Jápman boarisvuhtii",
         "btnPause": "Bisánit",
         "btnResume": "Joatkit",
@@ -1204,7 +1204,7 @@ Nynorsk: {
         "oldest": "Eldste ku",
         "born": "Fødslar totalt",
         "deadHunger": "Svolt-daude",
-        "deadIllness": "Sjukdoms-daude",
+        "deadIllness": "Sjukdoms-daude/katastrofe",
         "deadAge": "Alderdoms-daude",
         "btnPause": "Pause",
         "btnResume": "Halt fram",
@@ -1246,7 +1246,7 @@ Korean: {
         "oldest": "가장 나이 많은 소",
         "born": "총 출생 수",
         "deadHunger": "아사한 소 (배고픔)",
-        "deadIllness": "병사한 소 (질병)",
+        "deadIllness": "병사한 소 (질병)/재난",
         "deadAge": "노사한 소 (수명)",
         "btnPause": "일시 정지",
         "btnResume": "재개",
@@ -1288,7 +1288,7 @@ Swahili: {
         "oldest": "Ng'ombe mzee zaidi",
         "born": "Jumla ya waliozaliwa",
         "deadHunger": "Vifo vya njaa",
-        "deadIllness": "Vifo vya ugonjwa",
+        "deadIllness": "Vifo vya ugonjwa/janga",
         "deadAge": "Vifo vya uzee",
         "btnPause": "Sitisha",
         "btnResume": "Endelea",
@@ -1330,7 +1330,7 @@ Farsi: {
         "oldest": "پیرترین گاو",
         "born": "کل تولدها",
         "deadHunger": "مرگ بر اثر گرسنگی",
-        "deadIllness": "مرگ بر اثر بیماری",
+        "deadIllness": "مرگ بر اثر بیماری/فاجعه",
         "deadAge": "مرگ بر اثر پیری",
         "btnPause": "توقف",
         "btnResume": "ادامه",
@@ -1372,7 +1372,7 @@ Latin: {
         "oldest": "Vacca maxima natu",
         "born": "Nati summo",
         "deadHunger": "Mortui fame",
-        "deadIllness": "Mortui morbo",
+        "deadIllness": "Mortui morbo/calamitas",
         "deadAge": "Mortui senectute",
         "btnPause": "Pausa",
         "btnResume": "Resumere",
@@ -1414,7 +1414,7 @@ Quenya: {
         "oldest": "An-enyë yaxë",
         "born": "Nostari ohti",
         "deadHunger": "Qualmi maita",
-        "deadIllness": "Qualmi quámë",
+        "deadIllness": "Qualmi quámë/amarth",
         "deadAge": "Qualmi yernë",
         "btnPause": "Pusta",
         "btnResume": "A-lehta",
@@ -1480,7 +1480,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function startDisaster(type) {
     disasterActive = true;
     disasterType = type;
-    disasterTimer = 10;
+    disasterTimer = 15;
     //If you only want one of each 3 disasters, enable the line under
     //disastersOccurred[type] = true;
     
@@ -1498,7 +1498,7 @@ function startDisaster(type) {
 
     if (type === 'illness') {
         let tempCows = [...cows];
-        let numToKill = Math.floor(cows.length * 0.8);
+        let numToKill = Math.floor(cows.length * 0.7);
         for (let i = 0; i < numToKill; i++) {
             if (tempCows.length === 0) break;
             const idx = Math.floor(Math.random() * tempCows.length);
@@ -1543,7 +1543,7 @@ function startDisaster(type) {
 
 
 function updateDisaster(dt) {
-    let progress = (10 - disasterTimer) / 10;
+    let progress = (15 - disasterTimer) / 15;
     affectedCells = [];
 
 
