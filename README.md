@@ -72,7 +72,7 @@ When overgrazing is active, a red multiplier (e.g., `2.50x`) will appear next to
 In this simulation, managing your herd size is a balance between profit and peril. If the population grows too large, nature will intervene.
 
 ## 🔥 Disaster Types
-There are three types of disasters that can strike your farm. Every cow lost to these events is added to the **"Deaths illness"** counter.
+There are three types of disasters that can strike your farm.
 
 | Disaster | Impact |
 | :--- | :--- |
@@ -83,7 +83,7 @@ There are three types of disasters that can strike your farm. Every cow lost to 
 ---
 
 ## 📈 Risk & Probability
-The chance of a disaster occurring is dynamic. It scales with your herd size and time played. Once you surpass **200 cows**, the environment becomes significantly more unstable.
+The chance of a disaster occurring is dynamic. It scales with your herd size. Once you surpass **200 cows**, the environment becomes significantly more unstable.
 
 #### Probability Examples:
 * **50 Cows:** `0.1%` (Stable / Low risk)
